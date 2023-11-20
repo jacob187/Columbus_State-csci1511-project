@@ -1,7 +1,7 @@
 import sys
 from time import sleep
 
-import pygame
+import pygame, random
 
 from settings import Settings
 from game_stats import GameStats
@@ -194,20 +194,15 @@ class AlienInvasion:
 
     def _create_fleet(self):
         """Create the fleet of aliens."""
-        # Create an alien and keep adding aliens until there's no room left.
-        # Spacing between aliens is one alien width and one alien height.
-        alien = Alien(self)
-        alien_width, alien_height = alien.rect.size
 
-        current_x, current_y = alien_width, alien_height
-        while current_y < (self.settings.screen_height - 3 * alien_height):
-            while current_x < (self.settings.screen_width - 2 * alien_width):
-                self._create_alien(current_x, current_y)
-                current_x += 2 * alien_width
+        # Create a 2D array of possible coordinates for spaceship based on lengths determined in Chapter 13
+        spots = [[j, i] for i in range(58, 523, 116) for j in range(60, 1021, 120)]
 
-            # Finished a row; reset x value, and increment y value.
-            current_x = alien_width
-            current_y += 2 * alien_height
+        for i in range(0, random.randint(0, len(spots) - 1)):
+            # Stores the value of index that exists in spots and removes that index
+            alien_spot = spots.pop(random.randint(0, len(spots) - 1)) if spots else None
+
+            self._create_alien(alien_spot[0], alien_spot[1])
 
     def _create_alien(self, x_position, y_position):
         """Create an alien and place it in the fleet."""
